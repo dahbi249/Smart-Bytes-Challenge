@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="تحدي Smart Bytes — لعبة أسئلة للجوال في التكنولوجيا والعلوم والبرمجة والمنطق."
+    />
+    <meta name="theme-color" content="#0B1020" />
+    <title>تحدي Smart Bytes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <canvas id="particle-canvas" class="particle-canvas" aria-hidden="true"></canvas>
+
+    <div class="app-shell">
+      <header class="top-header">
+        <div class="brand-mark" aria-label="شعار Smart Bytes">
+          <img
+            class="brand-logo"
+            src="assets/smartBytesLogo.png"
+            alt="شعار Smart Bytes"
+            width="96"
+            height="48"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';"
+          />
+          <span class="brand-fallback" aria-hidden="true">SB</span>
+        </div>
+      </header>
+
+      <main class="game-app" aria-live="polite">
+        <section id="home-screen" class="screen active" aria-label="الصفحة الرئيسية">
+          <div class="hero-panel glass-card">
+            <div class="hero-logo-wrap">
+              <img
+                class="hero-logo"
+                src="assets/smartBytesLogo.png"
+                alt="شعار Smart Bytes"
+                width="170"
+                height="140"
+                onerror="this.style.display='none'; this.parentElement.querySelector('.hero-fallback').style.display='inline-flex';"
+              />
+              <span class="hero-fallback" aria-label="Smart Bytes">SB</span>
+            </div>
+
+            <div class="title-block">
+              <p class="eyebrow">جامعة تمنراست</p>
+              <h1>تحدي SMART BYTES</h1>
+            </div>
+
+            <p class="subtitle">فكّر بسرعة. اختبر معرفتك. اكسر الرقم القياسي.</p>
+            <p class="description">
+              تحدَّ نفسك في التكنولوجيا والعلوم والبرمجة والمنطق.
+            </p>
+
+            <div class="cta-row">
+              <button id="play-now-btn" class="primary-btn" type="button">العب الآن</button>
+              <button id="how-to-play-btn" class="secondary-btn" type="button">كيفية اللعب</button>
+            </div>
+
+            <div id="best-score-badge" class="best-badge" aria-live="polite">لا يوجد رقم قياسي شخصي بعد</div>
+            <p class="club-credit">Smart Bytes • جامعة تمنراست</p>
+          </div>
+        </section>
+
+        <section id="setup-screen" class="screen" aria-label="إعداد اللاعب">
+          <div class="panel glass-card">
+            <p class="eyebrow">إعداد اللاعب</p>
+            <h2>اختر اسمك المستعار</h2>
+
+            <label class="sr-only" for="nickname-input">الاسم المستعار</label>
+            <input
+              id="nickname-input"
+              type="text"
+              maxlength="16"
+              autocomplete="nickname"
+              enterkeyhint="go"
+              placeholder="لاعب بايت"
+              aria-describedby="nickname-hint nickname-error"
+            />
+
+            <div id="nickname-hint" class="input-hint">
+              من 2 إلى 16 حرفًا. اترك الحقل فارغًا أو اضغط «تخطي» للعب باسم لاعب بايت.
+            </div>
+            <p id="nickname-error" class="input-error hidden" role="alert"></p>
+
+            <button id="start-game-btn" class="primary-btn full-width" type="button">ابدأ التحدي</button>
+            <button id="skip-nickname-btn" class="secondary-btn full-width" type="button">تخطي — لاعب بايت</button>
+            <button id="back-home-btn" class="ghost-btn full-width" type="button">العودة للرئيسية</button>
+          </div>
+        </section>
+
+        <section id="game-screen" class="screen no-select" aria-label="شاشة اللعب">
+          <div class="hud glass-card">
+            <div class="hud-row">
+              <div class="status-pill" id="question-indicator">السؤال 1 / 10</div>
+              <div class="score-box" aria-live="polite">
+                <span class="score-label">النقاط</span>
+                <strong id="score-value">0</strong>
+              </div>
+            </div>
+
+            <div class="round-progress" aria-hidden="true">
+              <div id="round-progress-bar" class="round-progress-bar"></div>
+            </div>
+
+            <div class="hud-meta">
+              <div id="combo-pill" class="combo-pill hidden" aria-live="polite">سلسلة ×0</div>
+            </div>
+
+            <div class="timer-block" aria-live="polite">
+              <div class="timer-label-row">
+                <span>الوقت</span>
+                <span id="timer-value">15 ث</span>
+              </div>
+              <div class="timer-track" role="progressbar" aria-valuemin="0" aria-valuemax="15" aria-valuenow="15">
+                <div id="timer-bar" class="timer-bar"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="question-card glass-card">
+            <p id="question-category" class="question-category">أساسيات البرمجة</p>
+            <h2 id="question-text">جاري تحميل التحدي...</h2>
+          </div>
+
+          <div id="answer-list" class="answer-list" role="list"></div>
+
+          <div id="feedback-box" class="feedback-box hidden" aria-live="polite"></div>
+
+          <button id="exit-round-btn" class="warning-btn" type="button">إنهاء الجولة</button>
+        </section>
+
+        <section id="results-screen" class="screen" aria-label="النتائج">
+          <div class="results-panel glass-card">
+            <p class="eyebrow">انتهت الجولة</p>
+            <h2 id="result-title">ملخص التحدي</h2>
+
+            <div class="result-summary primary-glow">
+              <div>
+                <span class="summary-label">اللاعب</span>
+                <strong id="result-nickname">لاعب بايت</strong>
+              </div>
+              <div>
+                <span class="summary-label">النقاط</span>
+                <strong id="result-score">0</strong>
+              </div>
+            </div>
+
+            <div class="result-grid">
+              <div class="stat-card">
+                <span>صحيحة</span>
+                <strong id="result-correct">0 / 10</strong>
+              </div>
+              <div class="stat-card">
+                <span>الدقة</span>
+                <strong id="result-accuracy">0%</strong>
+              </div>
+              <div class="stat-card">
+                <span>متوسط الوقت</span>
+                <strong id="result-average-time">0.0 ث</strong>
+              </div>
+              <div class="stat-card">
+                <span>أفضل سلسلة</span>
+                <strong id="result-combo">0</strong>
+              </div>
+            </div>
+
+            <div id="rank-badge" class="rank-badge">مبتدئ البايت</div>
+            <p id="result-message" class="result-message">محاولة جيدة. واصل في الجولة القادمة!</p>
+
+            <div class="results-actions">
+              <button id="play-again-btn" class="primary-btn" type="button">العب مجددًا</button>
+              <button id="back-home-results-btn" class="secondary-btn" type="button">العودة للرئيسية</button>
+              <button id="share-result-btn" class="share-btn" type="button">شارك نتيجتي</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="modal-backdrop" class="modal-backdrop hidden" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="how-to-play-title">
+        <button id="close-modal-btn" class="close-modal" type="button" aria-label="إغلاق تعليمات اللعب">
+          ×
+        </button>
+        <h3 id="how-to-play-title">كيفية اللعب</h3>
+        <ol>
+          <li>اضغط <strong>العب الآن</strong>، أدخل اسمًا مستعارًا (اختياري)، وابدأ التحدي.</li>
+          <li>أجب عن 10 أسئلة اختيار من متعدد قبل انتهاء مؤقت 15 ثانية لكل سؤال.</li>
+          <li>كل إجابة صحيحة = 100 نقطة، مع مكافأة سرعة حتى 50 نقطة ومكافآت السلسلة.</li>
+          <li>الأخضر = صحيح؛ الأحمر = اختيارك عند الخطأ. تُعرض الإجابة الصحيحة دائمًا.</li>
+          <li>أكمل الجولة لرؤية رتبتك وإحصائياتك ورقمك القياسي على هذا الجهاز.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script src="questions.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
